@@ -133,11 +133,11 @@ Cube is a work in progress. As such, there's a few things you can do right now t
 * **Perform code reviews**. More eyes will help a) speed the project along b) ensure quality and c) reduce possible future bugs.
 * **Add tests**. There can never be enough tests.
 
-Read Cube [contributing.md](docs/CONTRIBUTING.md) for details on the latest development flow.
+Read Cube [contributing.md](docs/contributing.md) for details on the latest development flow.
 
 ### Want to hack on Cube?
 
-[![](https://cdn.rawgit.com/jbenet/contribute-ipfs-gif/master/img/contribute.gif)](https://github.com/ipfs/community/blob/master/contributing.md)
+[![](https://cdn.rawgit.com/jbenet/contribute-ipfs-gif/master/img/contribute.gif)](docs/contributing.md)
 
 # License
 

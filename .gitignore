@@ -1,0 +1,13 @@
+.lein-repl-history
+.nrepl-port
+target/**
+resources/public/js
+resources/public/css
+node_modules/
+.cljs_nashorn_repl/
+figwheel_server.log
+nashorn_code_cache/
+
+# Installed automatically by `make install`
+src/ui/less/ipfs.css
+src/ui/less/tachyons.css
