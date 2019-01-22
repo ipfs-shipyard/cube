@@ -1,4 +1,4 @@
-(defproject cube "0.1.0-SNAPSHOT"
+(defproject cube "0.1.0"
   :description "IPFS Cube will help people deploy and manage their own IPFS pinning services on top of existing cheap hardware, or cloud storage."
   :url "https://github.com/ipfs-shipyard/cube"
   :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
