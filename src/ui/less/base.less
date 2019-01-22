@@ -1,0 +1,28 @@
+@import (less) "tachyons.css";
+@import (less) "ipfs.css";
+
+html, body {
+  .sans-serif;
+  .bg-white;
+  .w-100;
+  .pt5;
+  margin: 0px; padding: 0px;
+  font-family: sans-serif;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+a[disabled] {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.disabled a {
+  cursor: default;
+}
+
+.disabled a:hover {
+  opacity: 1;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cube Dashboard</title>
+  <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    // Avoid re-frame-10x to show automatically
+    localStorage.setItem("day8.re-frame-10x.show-panel","\"false\"")
+    var CLOSURE_UNCOMPILED_DEFINES = {
+      "re_frame.trace.trace_enabled_QMARK_": true,
+      "day8.re_frame.tracing.trace_enabled_QMARK_": true
+    }
+  </script>
+  <script src="/js/goog/base.js" type="text/javascript"></script>
+  <script src="/js/cljs-file.js" type="text/javascript" ></script>
+  <script>
+    goog.require("day8.re_frame_10x.preload")
+    goog.require("figwheel.preload")
+  </script>
+  <script>
+    goog.require('ui.main')
+    window.onload = function () {
+      ui.main.run();
+    }
+  </script>
+</body>
+</html>
