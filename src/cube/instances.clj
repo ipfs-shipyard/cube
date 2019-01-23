@@ -21,21 +21,23 @@
       (db/remove-in db [:instances :running id])
       )))
 
+;; Hard-coded to docker atm
 (defn check-instances [db docker-conn]
-  (let [wanted (db/access-in db [:instances :wanted])
-        current (count (db/access-in db [:instances :running]))]
+  (when-not (nil? (db/access-in db [:instances :wanted :docker]))
+    (let [wanted (db/access-in db [:instances :wanted :docker])
+          current (count (db/access-in db [:instances :running]))]
 
-    (cond
-      (= wanted 0) (doseq [[id m] (db/access-in db [:instances :running])]
-                     (provider-docker/destroy docker-conn m)
-                     (db/remove-in db [:instances :running id]))
-      (> wanted current) (let [to-create (- wanted current)]
-                           (println (format "Creating %s new instances" to-create))
-                           (create-instances db docker-conn to-create))
-      (< wanted current) (let [to-remove (- current wanted)]
+      (cond
+        (= wanted 0) (doseq [[id m] (db/access-in db [:instances :running])]
+                       (provider-docker/destroy docker-conn m)
+                       (db/remove-in db [:instances :running id]))
+        (> wanted current) (let [to-create (- wanted current)]
+                             (println (format "Creating %s new instances" to-create))
+                             (create-instances db docker-conn to-create))
+        (< wanted current) (let [to-remove (- current wanted)]
                              (println (format "Removing %s instances" to-remove))
                              (delete-instances db docker-conn to-remove))
-      (= wanted current) (comment "Balanced")))) ;; do nothing
+        (= wanted current) (comment "Balanced")))))
 
 
 (defrecord Instances [db scheduler docker]
@@ -45,7 +47,7 @@
     ;; Debug function to change state each tick
     ;; (scheduler/add-task scheduler #(db/put db :ticks (+ (db/access db :ticks) 1)))
     (when (nil? (db/access db :instances))
-      (db/put db :instances {:wanted 0
+      (db/put db :instances {:wanted {}
                              :running {}
                              :cluster-secret (hex 32)}))
     (scheduler/add-task scheduler #(check-instances db (:connection docker)))
@@ -57,8 +59,8 @@
 (defn new []
   (map->Instances {}))
 
-(defn set-wanted [instances n]
-  (db/put-in (:db instances) [:instances :wanted] n))
+(defn set-wanted [instances instance-type instance-count]
+  (db/put-in (:db instances) [:instances :wanted instance-type] instance-count))
 
 (defn get-wanted [instances]
   (db/access-in (:db instances) [:instances :wanted]))

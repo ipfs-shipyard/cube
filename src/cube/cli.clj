@@ -1,6 +1,6 @@
 (ns cube.cli
   (:require [com.stuartsierra.component :as c]
-            [cube.system :as system]
+            [cube.system :refer [create-system]]
             [cube.setup :as setup]
             [cube.gui :as gui])
   (:gen-class))
@@ -32,7 +32,7 @@
       (Boolean/parseBoolean cube-browser))))
 
 (defn start-system! [params]
-  (reset! running-system (c/start (system/system params))))
+  (reset! running-system (c/start (create-system params))))
 
 (defn stop-system! []
   (c/stop @running-system)

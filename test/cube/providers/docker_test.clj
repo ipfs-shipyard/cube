@@ -11,5 +11,5 @@
   (let [[k v] (provider-docker/create-id "go-ipfs-id" "ipfs-cluster-id")]
     (is (not (nil? k)))
     (is (= :docker (:type v)))
-    (is (= "go-ipfs-id" (:go-ipfs v)))
-    (is (= "ipfs-cluster-id" (:ipfs-cluster v)))))
+    (is (= "go-ipfs-id" (:go-ipfs (:metadata v))))
+    (is (= "ipfs-cluster-id" (:ipfs-cluster (:metadata v))))))

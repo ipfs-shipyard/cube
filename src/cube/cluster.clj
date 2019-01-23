@@ -7,8 +7,11 @@
 
 (defn format-peer-info [peer]
   (-> (if (empty? (:error peer)) (dissoc peer :error) peer)
-      (dissoc peer :peername)
-      (dissoc peer :cid)))
+      (dissoc :peername)
+      (assoc :peer-id (:peer peer))
+      (dissoc :peer)
+      (assoc :status (keyword (:status peer)))
+      (dissoc :cid)))
 
 (defn format-res [res]
   (sort-by :cid (vec (map (fn [p] {:cid (:cid p)

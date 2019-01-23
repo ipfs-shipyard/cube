@@ -53,8 +53,8 @@
 ;; Creates a map to map ID => containers for go-ipfs + ipfs-cluster
 (defn create-id [conn go-ipfs-id ipfs-cluster-id]
   [(keyword (url-part 8)) {:type provider-type
-                           :go-ipfs go-ipfs-id
-                           :ipfs-cluster ipfs-cluster-id
+                           :metadata {:go-ipfs-id go-ipfs-id
+                                      :ipfs-cluster-id ipfs-cluster-id}
                            :cluster-api (get-api-multiaddr conn ipfs-cluster-id)
                            :webui (get-webui-addr conn ipfs-cluster-id)
                            :ipfs-proxy (get-ipfs-proxy conn ipfs-cluster-id)}])
@@ -71,7 +71,7 @@
   [db conn]
   (let [instances (db/access-in db [:instances :running])]
     (if (> (count instances) 0)
-      (let [ip (get-ip conn (-> instances first second :ipfs-cluster))
+      (let [ip (get-ip conn (-> instances first second :metadata :ipfs-cluster-id))
             res (get-retry 10 ip)
             id (-> res :body :id)]
         (str "daemon --bootstrap /ip4/" ip "/tcp/9096/ipfs/" id))
@@ -98,12 +98,12 @@
     (save-instance conn db go-ipfs-id ipfs-cluster-id)))
 
 (defn destroy [conn instance]
-  (let [go-ipfs-id (:go-ipfs instance)
-        ipfs-cluster-id (:ipfs-cluster instance)]
+  (let [metadata (:metadata instance)
+        go-ipfs-id (:go-ipfs-id metadata)
+        ipfs-cluster-id (:ipfs-cluster-id metadata)]
     (doseq [id [ipfs-cluster-id go-ipfs-id]]
       (docker/kill conn id)
       (docker/rm conn id))))
-
 
 (defrecord ProviderDocker []
   c/Lifecycle

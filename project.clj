@@ -75,4 +75,6 @@
                                    :pretty-print true
                                    }}]}
   :main cube.cli
-  :aot [cube.cli])
+  ;; TODO aot disabled for now as corrupts refresh of namespaces in repl
+  ;; :aot [cube.cli]
+  )

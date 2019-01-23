@@ -80,9 +80,14 @@
                                                             {:status 204})))
                          (compojure/GET "/db/ws" [] (ws-handler db))
                          (compojure/GET "/instances/wanted" [] (str (instances/get-wanted instances)))
-                         (compojure/POST "/instances/wanted/:n" [n :<< coercions/as-int]
+                         (compojure/POST "/instances/wanted/:instance-type/:instance-count"
+                                         [instance-type
+                                          instance-count :<< coercions/as-int]
                                          (do 
-                                           (instances/set-wanted instances n)
+                                           (instances/set-wanted
+                                             instances
+                                             (keyword instance-type)
+                                             instance-count)
                                            {:status 200})))
       ;; TODO leading to issues in uberjar with `Stream Closed` and what-not
       ;; (route/not-found (resource-response "index.html" {:root "public"}))

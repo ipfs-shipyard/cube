@@ -8,7 +8,7 @@
             [cube.providers.docker :as provider-docker]
             [cube.cluster :as cluster]))
 
-(defn system [config-options]
+(defn create-system [config-options]
   (let [{http-port :http-port} config-options]
     (c/system-map :db (db/new "~/.cube/db.clj")
                   :scheduler (scheduler/new {:interval 1})
