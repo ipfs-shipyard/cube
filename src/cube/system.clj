@@ -9,8 +9,9 @@
             [cube.cluster :as cluster]))
 
 (defn create-system [config-options]
-  (let [{http-port :http-port} config-options]
-    (c/system-map :db (db/new "~/.cube/db.clj")
+  (let [{http-port :http-port
+         db-path   :db-path} config-options]
+    (c/system-map :db (db/new db-path)
                   :scheduler (scheduler/new {:interval 1})
                   :web (c/using (web/new http-port) [:db :instances :cluster])
                   :setup (c/using (setup/new) [:db])

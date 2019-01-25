@@ -19,7 +19,8 @@
 (defn start
   ([] (start false))
   ([figwheel?] (do (when figwheel? (fw/start-figwheel!))
-                  (start-system! {:http-port 3000}))))
+                  (start-system! {:http-port 3000
+                                  :db-path "/tmp/tmp-cube-db.clj"}))))
 
 (defn stop
   ([] (stop false))

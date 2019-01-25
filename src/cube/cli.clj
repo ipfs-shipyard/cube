@@ -15,6 +15,14 @@
       0
       (Integer/parseInt port))))
 
+(defn get-db-path
+  "Returns the value of the env var CUBE_PATH or defaults to ~/.cube/db.clj"
+  []
+  (let [path (System/getenv "CUBE_PATH")]
+    (if (nil? path)
+      (str (System/getProperty "user.home") "/.cube/db.clj")
+      path)))
+
 (defn gui?
   "Returns true if CUBE_GUI not set or set to 'true', otherwise returns false"
   []
@@ -30,6 +38,7 @@
     (if (nil? cube-browser)
       true
       (Boolean/parseBoolean cube-browser))))
+
 
 (defn start-system! [params]
   (reset! running-system (c/start (create-system params))))
@@ -54,7 +63,8 @@
 (defn -main [& args]
   (when (gui?)
     (gui/start-gui))
-  (start-system! {:http-port (get-port)})
+  (start-system! {:http-port (get-port)
+                  :db-path (get-db-path)})
   (let [port (get-port-from-system running-system)
         password (get-setup-password-from-system running-system)]
     (when (gui?)

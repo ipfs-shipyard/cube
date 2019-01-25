@@ -19,8 +19,6 @@
     (atom (merge initial-state new-db))
     (atom initial-state)))
 
-(def db-path (str (System/getProperty "user.home") "/.cube/db.clj"))
-
 (defn validate-new-state [new-state]
   (if (s/valid? :cube/db new-state)
     true
@@ -34,18 +32,20 @@
 (defrecord DB [path]
   c/Lifecycle
   (start [this]
-    (println "[db] Starting")
-    (let [new-state (new-or-existing-db db-path)]
+    (println (str "[db] Starting with db " path))
+    (let [new-state (new-or-existing-db path)]
       (set-validator! new-state validate-new-state)
-      (assoc this :state new-state)))
+      (-> this
+          (assoc :db-path path)
+          (assoc :state new-state))))
 
   (stop [this]
     (println "[db] Stopping")
     (assoc this :state nil)))
 
 (defn persist! [db]
-  (make-parents db-path)
-  (spit db-path (with-out-str (pprint @(:state db)))))
+  (make-parents (:db-path db))
+  (spit (:db-path db) (with-out-str (pprint @(:state db)))))
 
 (defn put [db k v]
   (do
