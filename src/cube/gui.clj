@@ -1,7 +1,6 @@
 (ns cube.gui
   (:gen-class)
-  (:require [cube.system :as system]
-            [clojure.pprint :refer [pprint]]
+  (:require [clojure.pprint :refer [pprint]]
             [clojure.java.browse :refer [browse-url]]
             [com.stuartsierra.component :as c])
   (:use seesaw.core))
@@ -75,9 +74,6 @@
                :height 220
                :resizable? false
                :on-close :exit))
-
-(defn start-system! [port]
-  (c/start (system/system {:http-port port})))
 
 (defn server-started! [] (do
                             (config! shutdown-button :enabled? true)

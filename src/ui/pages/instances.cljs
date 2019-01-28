@@ -11,7 +11,7 @@
   :set-wanted-instances
   (fn-traced [cofx [_ n]]
              {:http {:method "POST"
-                     :url (str "/api/instances/wanted/" n)
+                     :url (str "/api/instances/wanted/docker/" n)
                      :body ""
                      :headers {}
                      :on-success (fn [])}}))
@@ -45,8 +45,11 @@
 (def value (r/atom 0))
 (def selected (r/atom nil))
 
+(defn count-wanted [m]
+  (reduce + (vals m)))
+
 (defn render []
-  (let [wanted @(subscribe [:instances/wanted])
+  (let [wanted (count-wanted @(subscribe [:instances/wanted]))
         running (count @(subscribe [:instances/running]))]
     [:div
      [:div.w-100.fl

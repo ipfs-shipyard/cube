@@ -1,6 +1,8 @@
 (ns cube.db
   (:require [com.stuartsierra.component :as c]
             [clojure.java.io :refer [make-parents]]
+            [clojure.spec.alpha :as s]
+            [shared.db :as shared-db]
             [clojure.pprint :refer [pprint]]))
 
 ;; TODO - DB under test currently overrides locally saved DB...
@@ -17,21 +19,33 @@
     (atom (merge initial-state new-db))
     (atom initial-state)))
 
-(def db-path (str (System/getProperty "user.home") "/.cube/db.clj"))
+(defn validate-new-state [new-state]
+  (if (s/valid? :cube/db new-state)
+    true
+    (do (println "Explanation:")
+        (s/explain :cube/db new-state)
+        (println "Tried new state:")
+        (pprint new-state)
+        (println "From:")
+        (pprint (.getStackTrace (Thread/currentThread))))))
 
 (defrecord DB [path]
   c/Lifecycle
   (start [this]
-    (println "[db] Starting")
-    (assoc this :state (new-or-existing-db db-path)))
+    (println (str "[db] Starting with db " path))
+    (let [new-state (new-or-existing-db path)]
+      (set-validator! new-state validate-new-state)
+      (-> this
+          (assoc :db-path path)
+          (assoc :state new-state))))
 
   (stop [this]
     (println "[db] Stopping")
     (assoc this :state nil)))
 
 (defn persist! [db]
-  (make-parents db-path)
-  (spit db-path (with-out-str (pprint @(:state db)))))
+  (make-parents (:db-path db))
+  (spit (:db-path db) (with-out-str (pprint @(:state db)))))
 
 (defn put [db k v]
   (do
@@ -45,17 +59,11 @@
 
 (defn dissoc-in
   "Dissociates an entry from a nested associative structure returning a new
-  nested structure. keys is a sequence of keys. Any empty maps that result
-  will not be present in the new structure."
-  [m [k & ks :as keys]]
-  (if ks
-    (if-let [nextmap (get m k)]
-      (let [newmap (dissoc-in nextmap ks)]
-        (if (seq newmap)
-          (assoc m k newmap)
-          (dissoc m k)))
-      m)
-    (dissoc m k)))
+  nested structure. keys is a sequence of keys."
+  [m ks]
+  (let [selector (last ks)
+        firsts (vec (reverse (rest (reverse ks))))]
+    (update-in m firsts dissoc selector)))
 
 (defn remove [db ks]
   (do
