@@ -61,10 +61,16 @@
   (group-by-status-and-count info "pinning"))
 
 (defn count-errors [info]
-  (group-by-status-and-count info "pin_error"))
+  (+ (group-by-status-and-count info "pin_error")
+     (group-by-status-and-count info "unpin_error")))
 
 (defn get-ipfs-io-link [pin]
   (str "https://ipfs.io/ipfs/" (:cid pin)))
+
+(defn details-link [cid]
+  [:a.f5.aqua {:href "#"
+               :onClick #(do (.preventDefault %)
+                             (rf/dispatch [:add-subpage cid]))} "Details"])
 
 (defn pin-table [pins]
   [:div
@@ -90,7 +96,7 @@
          [:td.pa3 (count-pinning pin)]
          [:td.pa3 (count-pinned pin)]
          [:td.pa3 (count-errors pin)]
-         [:td.pa3 [:a.f5.aqua "Details"]]
+         [:td.pa3 (details-link (:cid pin))]
          [:td.pa3 [:a.f5.aqua "View in webui"]]
          [:td.pa3 [:a.f5.aqua {:href (get-ipfs-io-link pin)} "View on ipfs.io"]]
          [:td.pa3 [:a.f5.aqua {:href "#"
@@ -127,4 +133,5 @@
     (let [pins @(rf/subscribe [:pins])]
       (if (= 0 (count pins))
         (no-pins-message)
-        (pin-table pins)))]])
+        (pin-table pins)))]
+   [:div.cf]])

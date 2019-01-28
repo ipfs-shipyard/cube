@@ -51,6 +51,7 @@
                              :running {}
                              :cluster-secret (hex 32)}))
     (scheduler/add-task scheduler #(check-instances db (:connection docker)))
+    ;; pull needed images
     (assoc this :instances {:db db}))
   (stop [this]
     (print "[instances] Stopping")

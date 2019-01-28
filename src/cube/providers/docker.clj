@@ -20,6 +20,10 @@
       :network-settings
       :ip-address))
 
+(defn pull-images [conn]
+  (doseq [[_ image] images]
+    (docker/pull conn image)))
+
 ;; Good'ol http/get but with retries and hardcoded :9094/id suffix
 (defn get-retry [max-attempts ip]
   (http/get (str "http://" ip ":9094/id")
@@ -105,10 +109,14 @@
       (docker/kill conn id)
       (docker/rm conn id))))
 
+(defn initialize [conn]
+  (pull-images conn))
+
 (defrecord ProviderDocker []
   c/Lifecycle
   (start [this]
     (let [connection (docker/connect)]
+      (initialize connection)
       (assoc this :connection connection)))
   (stop [this]
     (docker/disconnect (:connection this))

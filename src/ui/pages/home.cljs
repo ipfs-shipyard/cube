@@ -13,7 +13,7 @@
 
 (defn render []
   [:div
-   [:h2.f2 "Welcome to Cube"]
+   [:span.f2.aqua "Welcome to Cube"]
    [:p "Reliable, easy to use, easily managed pinning service"]
    [:p "All the fun is happening under the 'Pins' and 'Instances' tabs"]
    (button/button {:text (if @show-insides?
