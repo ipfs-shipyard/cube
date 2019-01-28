@@ -38,9 +38,7 @@
                  [clj-ssh "0.5.14"]
                  [ring-json-response "0.2.0"]
                  [aleph "0.4.6"]
-                 ;; TODO waiting for new version
-                 ;; [lispyclouds/clj-docker-client "0.1.12-SNAPSHOT"]
-                 [victorb/clj-docker-client "0.1.12-SNAPSHOT"]
+                 [lispyclouds/clj-docker-client "0.1.12"]
                  [com.fasterxml.jackson.core/jackson-core "2.9.8"]
                  [org.clojure/tools.trace "0.7.10"]
                  [org.clojure/clojurescript "1.10.238"]
@@ -53,7 +51,8 @@
                  [org.clojure/test.check "0.10.0-alpha3"]
                  [figwheel-sidecar "0.5.18"]
                  [cider/piggieback "0.3.10"]
-                 [binaryage/devtools "0.9.10"]]
+                 [binaryage/devtools "0.9.10"]
+                 [clojure-humanize "0.2.2"]]
   ;; TODO make run for `uberjar` but not the rest
   ;; :prep-tasks ["compile" ["do" ["shell" "make" "install"]
   ;;                              ["cljsbuild" "once"]

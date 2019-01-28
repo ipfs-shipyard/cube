@@ -1,5 +1,6 @@
 (ns ui.pages.pin
-  (:require [re-frame.core :refer [subscribe dispatch]]))
+  (:require [re-frame.core :refer [subscribe dispatch]]
+            [clojure.contrib.humanize :refer [filesize]]))
 
 (defn peer-map [p]
   [:div.mt3
@@ -32,6 +33,9 @@
      [:div.f6.mt1
       [:span.b.monospace "Pinners: "]
       [:span (-> pin :peer-map count)]]
+     [:div.f6.mt1
+      [:span.b.monospace "Size: "]
+      [:span (filesize (:size pin))]]
      [:div.f3.mt4.b "Peers"]
      (for [p (:peer-map pin)]
        (peer-map p))]))

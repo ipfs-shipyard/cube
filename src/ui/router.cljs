@@ -13,6 +13,7 @@
             [ui.pages.instances :as instances]
             [ui.pages.users :as users]
             [ui.pages.groups :as groups]
+            [ui.pages.monitoring :as monitoring]
             [ui.pages.preferences :as preferences]
             [ui.pages.setup :as setup-page]
             [ui.pages.setup.welcome :as setup-welcome]
@@ -48,6 +49,7 @@
                  "instances" instances/render
                  "users" users/render
                  "groups" groups/render
+                 "monitoring" monitoring/render
                  "preferences" preferences/render
                  "setup" setup-page/render
                  ["setup/" :password "/welcome"] setup-welcome/render

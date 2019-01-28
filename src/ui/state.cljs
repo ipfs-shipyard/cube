@@ -1,8 +1,7 @@
 (ns ui.state (:require
             [re-frame.core :refer [reg-event-db reg-sub]]
             ;; TODO ruins dead code elimation
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
-               ))
+            [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
 ;; contains:
 ;; - map of the initial state

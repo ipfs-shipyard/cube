@@ -2,15 +2,15 @@
   (:require [re-frame.core :refer [subscribe]]
             [ui.router :as router]))
 
-(def navbar-items {"/home" "Home"
-                   "/upload" "Upload"
-                   "/pins" "Pins"
-                   "/instances" "Instances"
-                   "/users" "Users"
-                   "/groups" "Groups"
-                   "/preferences" "Preferences"})
-
-(def disabled-items ["/upload" "/users" "/groups" "/preferences"])
+(def navbar-items [{:url "/home" :title "Home" :active true}
+                   {:url "/upload" :title "Upload" :active false}
+                   {:url "/pins" :title "Pins" :active true}
+                   {:url "/instances" :title "Instances" :active true}
+                   {:url "/users" :title "Users" :active false}
+                   {:url "/groups" :title "Groups" :active false}
+                   {:url "/monitoring" :title "Monitoring" :active true}
+                   {:url "/preferences" :title "Preferences" :active false}
+                   {:url "/logout" :title "Logout" :active false}])
 
 (defn href-attr [url enabled?]
   {:href (if enabled? url "")
@@ -36,8 +36,9 @@
      [:a.link.dim.white.b.f3.dib.mr3.aqua (href-attr "/home" setup-completed?) "Cube"]
      (let [active-page @(subscribe [:active-page])]
        (for [item navbar-items]
-         (let [[url title] item]
-           (let [matched? (= active-page url)
-                 is-enabled? (not (includes? disabled-items url))]
-             (create-navbar-item url title matched? is-enabled?)))))]))
+         (let [url (:url item)
+               title (:title item)
+               active (:active item)
+               matched? (= active-page url)]
+           (create-navbar-item url title matched? active))))]))
 
