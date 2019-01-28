@@ -134,3 +134,18 @@
              (-> db
                  :remote-db
                  :pins)))
+
+;; returns the first element that matches predicate
+(defn find-first
+         [f coll]
+         (first (filter f coll)))
+
+(defn cid-match? [pin cid]
+    (= (:cid pin) cid))
+
+(reg-sub
+  :pin
+  (fn-traced [db [_ cid]]
+             (find-first #(cid-match? % cid) (-> db
+                                                 :remote-db
+                                                 :pins))))
