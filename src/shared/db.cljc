@@ -57,7 +57,12 @@
                                     :cube.setup/password]))
 
 ;; Pins
-(s/def :cube.pin.peer/status #{:pinned :pin_error :pinning})
+;; TODO needs to have all pinning statuses from ipfs-cluster
+
+(s/def :cube.pin.peer/status #{:pinned
+                               :pinning
+                               :pin_error
+                               :unpin_error})
 (s/def :cube.pin.peer/peer-id :cube.util/not-empty-string)
 (s/def :cube.pin.peer/timestamp :cube.util/not-empty-string)
 

@@ -37,8 +37,8 @@
 
 (defn selected-view [id instance]
   [:div
-   (label "go-ipfs container" (:go-ipfs instance))
-   (label "ipfs-cluster container" (:ipfs-cluster instance))
+   (label "go-ipfs container" (-> instance :metadata :go-ipfs-id))
+   (label "ipfs-cluster container" (-> instance :metadata :ipfs-cluster-id))
    (label "instance type" (:type instance))
    (label "ipfs-cluster api multiaddr" (:cluster-api instance))])
 
@@ -83,4 +83,5 @@
        [:div.mt3
         [:div.f3 "Running Instances"]
         [:div.mt1 (for [[id i] @(subscribe [:instances/running])]
-                    (instance-row id i #(reset! selected id) @selected))]]]]]))
+                    (instance-row id i #(reset! selected id) @selected))]]]]
+     [:div.cf]]))

@@ -24,7 +24,7 @@
   (boolean (some #{item} coll)))
 
 (defn create-navbar-item [url title matched? enabled?]
-  [:a.link.dim.navy.f5.dib.mr3
+  [:a.link.white.f5.dib.mr3
    (merge {:class [(when matched? "underline")]
            :disabled (not enabled?)}
           (href-attr url enabled?))
@@ -32,8 +32,8 @@
 
 (defn navbar []
   (let [setup-completed? @(subscribe [:setup-completed?])]
-    [:nav.pa3.pa4-ns {:class (when (not setup-completed?) "o-10 disabled")}
-     [:a.link.dim.navy.b.f4.dib.mr3 (href-attr "/home" setup-completed?) "Cube"]
+    [:nav.pa3.pa4-ns.bg-navy {:class (when (not setup-completed?) "o-10 disabled")}
+     [:a.link.dim.white.b.f3.dib.mr3.aqua (href-attr "/home" setup-completed?) "Cube"]
      (let [active-page @(subscribe [:active-page])]
        (for [item navbar-items]
          (let [[url title] item]
