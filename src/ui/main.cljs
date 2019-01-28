@@ -32,7 +32,7 @@
   "The default application view"
   [:div
    [navigation/navbar]
-   [:div.w-100.gray-box.ma4.pa4
+   [:div.ma3.gray-box.pa3
     (router/matching-page @(subscribe [:active-page]))]])
 
 ;; aaaaaand a render function! Does what it says on the tin

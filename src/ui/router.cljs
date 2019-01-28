@@ -9,6 +9,7 @@
             [ui.pages.home :as home]
             [ui.pages.upload :as upload]
             [ui.pages.pins :as pins]
+            [ui.pages.pin :as pin]
             [ui.pages.instances :as instances]
             [ui.pages.users :as users]
             [ui.pages.groups :as groups]
@@ -43,6 +44,7 @@
                  "home" home/render
                  "upload" upload/render
                  "pins" pins/render
+                 ["pins/" :cid] pin/render
                  "instances" instances/render
                  "users" users/render
                  "groups" groups/render
