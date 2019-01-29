@@ -1,10 +1,11 @@
 (ns cube.db-test
-  (:require [cube.db :as db] :reload-all
-            [clojure.pprint :refer [pprint]])
+  (:require [cube.db :as db])
   (:use clojure.test))
 
-(defn test-db [] {:state (atom {:name "barry"
+(defn test-db [] {:db-path "/tmp/test-cube-db.clj"
+                  :state (atom {:name "barry"
                                 :numbers [5]
+                                :nested {:name "larry"}
                                 :instances {:running {}}})})
 
 (deftest access-value
@@ -32,9 +33,15 @@
     (is (= nil (db/access new-db :name)))))
 
 (deftest remove-in-value
-  (let [new-db (test-db)]
-    (db/remove-in new-db [:name])
-    (is (= nil (db/access-in new-db [:name])))))
+  (testing "Remove one key"
+    (let [new-db (test-db)]
+      (db/remove-in new-db [:name])
+      (is (= nil (db/access-in new-db [:name])))))
+  (testing "Not remove empty maps when removing nested values"
+    (let [new-db (test-db)]
+      (db/remove-in new-db [:nested :name])
+      (is (= {} (db/access-in new-db [:nested])))
+      (is (= nil (db/access-in new-db [:nested :name]))))))
 
 (deftest add-to-value
   (let [new-db (test-db)]

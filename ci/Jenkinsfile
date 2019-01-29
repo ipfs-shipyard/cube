@@ -1,0 +1,19 @@
+node(label: 'linux') { ansiColor('xterm') {
+  stage("Build") {
+    checkout scm
+    sh "docker build -t ipfs-shipyard/cube ."
+  }
+  stage("Tests + Coverage") {
+    sh "docker run --rm -v \$(pwd)/target:/usr/src/app/target ipfs-shipyard/cube lein cloverage --junit"
+    junit 'target/coverage/junit.xml'
+    archiveArtifacts 'target/coverage/**'
+  }
+  stage("Uberjar") {
+    sh "docker run --rm -v \$(pwd)/target:/usr/src/app/target ipfs-shipyard/cube lein uberjar"
+    archiveArtifacts 'target/*'
+  }
+  stage("Clean") {
+    sh "docker rmi ipfs-shipyard/cube"
+    cleanWs()
+  }
+}}

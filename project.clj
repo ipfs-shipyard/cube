@@ -10,7 +10,8 @@
             [lein-auto "0.1.3"]
             [lein-less "1.7.5"]
             [lein-shell "0.5.0"]
-            [io.taylorwood/lein-native-image "0.3.0"]]
+            [io.taylorwood/lein-native-image "0.3.0"]
+            [lein-cloverage "1.0.13"]]
   :native-image {:name "cube"
                  :graal-bin "graalvm-ce-1.0.0-rc11/"
                  :opts ["--verbose"
