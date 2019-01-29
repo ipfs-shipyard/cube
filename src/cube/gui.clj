@@ -68,13 +68,6 @@
                                   open-setup-page-button
                                   shutdown-button]))
 
-(def myframe (frame :title "Cube",
-               :content panel
-               :width 350
-               :height 220
-               :resizable? false
-               :on-close :exit))
-
 (defn server-started! [] (do
                             (config! shutdown-button :enabled? true)
                             (config! open-setup-page-button :enabled? true)
@@ -90,5 +83,11 @@
   (reset! setup-password password))
 
 (defn start-gui []
-  (invoke-later
-    (show! myframe)))
+  (let [myframe (frame :title "Cube",
+                       :content panel
+                       :width 350
+                       :height 220
+                       :resizable? false
+                       :on-close :exit)]
+    (invoke-later
+      (show! myframe))))
