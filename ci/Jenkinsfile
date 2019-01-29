@@ -5,7 +5,8 @@ node(label: 'linux') { ansiColor('xterm') {
   }
   stage("Tests + Coverage") {
     sh "docker run --rm -v \$(pwd)/target:/usr/src/app/target ipfs-shipyard/cube lein cloverage --junit"
-    cobertura coberturaReportFile: 'target/coverage/junit.xml'
+    junit 'target/coverage/junit.xml'
+    archiveArtifacts 'target/coverage/**'
   }
   stage("Uberjar") {
     sh "docker run --rm -v \$(pwd)/target:/usr/src/app/target ipfs-shipyard/cube lein uberjar"
