@@ -8,6 +8,7 @@
   <a href="https://protocol.io"><img src="https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square" /></a>
   <a href="http://peerpad.net/"><img src="https://img.shields.io/badge/project-Cube-blue.svg?style=flat-square" /></a>
   <a href="http://webchat.freenode.net/?channels=%23ipfs"><img src="https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square" /></a>
+  <a href='https://ci.ipfs.team/job/IPFS%20Shipyard/job/cube/job/master/'><img src='https://ci.ipfs.team/job/IPFS%20Shipyard/job/cube/job/master/badge/icon'></a>
 </p>
 
 > IPFS Cube will help people deploy and manage their own IPFS pinning services
