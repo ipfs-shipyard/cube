@@ -1,6 +1,5 @@
 (ns cube.setup-test
-  (:require [cube.setup :as setup]
-            [clojure.pprint :refer [pprint]])
+  (:require [cube.setup :as setup])
   (:use clojure.test)
   (:import [cube.setup Setup]))
 

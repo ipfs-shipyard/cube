@@ -1,6 +1,5 @@
 (ns cube.db-test
-  (:require [cube.db :as db] :reload-all
-            [clojure.pprint :refer [pprint]])
+  (:require [cube.db :as db])
   (:use clojure.test))
 
 (defn test-db [] {:db-path "/tmp/test-cube-db.clj"

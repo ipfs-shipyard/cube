@@ -1,6 +1,5 @@
 (ns cube.cluster-test
-  (:require [cube.cluster :as cluster] :reload-all
-            [clojure.pprint :refer [pprint]]
+  (:require [cube.cluster :as cluster]
             [clojure.spec.alpha :as s])
   (:use clojure.test))
 
