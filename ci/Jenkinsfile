@@ -1,0 +1,17 @@
+node(label: 'linux') { ansiColor('xterm') {
+  stage("Build") {
+    checkout scm
+    sh "docker build -t ipfs-shipyard/cube ."
+  }
+  stage("Tests") {
+    sh "docker run --rm ipfs-shipyard/cube lein test"
+  }
+  stage("Uberjar") {
+    sh "docker run --rm -v \$(pwd)/target:/usr/src/app/target ipfs-shipyard/cube lein uberjar"
+    archiveArtifacts 'target/*'
+  }
+  stage("Clean") {
+    sh "docker rmi ipfs-shipyard/cube"
+    cleanWs()
+  }
+}}

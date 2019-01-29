@@ -6,10 +6,12 @@
 
 (def test-password "lol")
 
-(defn test-db [] {:state (atom {:setup {:completed? false
+(defn test-db [] {:db-path "/tmp/test-cube-db.clj"
+                  :state (atom {:setup {:completed? false
                                         :password test-password}})})
 
-(defn empty-db [] {:state (atom {})})
+(defn empty-db [] {:db-path "/tmp/test-cube-db.clj"
+                   :state (atom {})})
 
 (deftest get-password
   (is (= test-password (setup/get-password (test-db))))
