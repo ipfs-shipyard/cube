@@ -121,6 +121,12 @@ Cube. Building Cube will help disambiguate which functionality lives in which
 module for it, and other third-party services seeking to use Cluster to support
 their work.
 
+## Running the prototype
+
+Easiest way to try out the latest build is to download the latest built version from master. You can find that in [the directory of artifacts on Jenkins](https://ci.ipfs.team/job/IPFS%20Shipyard/job/cube/job/master/lastSuccessfulBuild/artifact/target/). Find the file that fits the pattern `cube-$version-standalone.jar`, download and run it. GUI should start and the setup process should start.
+
+If you're interested in building from source, please see [the guide on how to contribute](https://github.com/ipfs-shipyard/cube/blob/master/docs/contributing.md).
+
 ## Team
 
 * [Michelle Hertzfeld](https://github.com/meiqimichelle)
