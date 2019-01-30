@@ -9,6 +9,7 @@
             [clojure.pprint :refer [pprint]]
             [cube.db :as db]
             [cube.setup :as setup]
+            [cube.monitoring :as monitoring]
             [cube.instances :as instances]
             [cube.cluster :as cluster]
             [ring.middleware.reload :refer [wrap-reload]]
@@ -88,7 +89,8 @@
                                              instances
                                              (keyword instance-type)
                                              instance-count)
-                                           {:status 200})))
+                                           {:status 200}))
+                         (compojure/GET "/monitoring" [] (json/write-str @cube.monitoring/state)))
       ;; TODO leading to issues in uberjar with `Stream Closed` and what-not
       ;; (route/not-found (resource-response "index.html" {:root "public"}))
       (compojure/GET "/*" []

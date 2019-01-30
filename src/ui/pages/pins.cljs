@@ -4,6 +4,7 @@
             [ui.components.button :as button]
             [ui.components.text-input :as text-input]
             [ui.pins :as pins]
+            [clojure.contrib.humanize :refer [filesize]]
             ))
 
 (defn no-instances-message []
@@ -80,6 +81,7 @@
       [:tr.stripe-dark
        [:th.fw6.tl.pa3.bg-white "Hash"]
        [:th.fw6.tl.pa3.bg-white "Name"]
+       [:th.fw6.tl.pa3.bg-white "Size"]
        [:th.fw6.tl.pa3.bg-white "Pinning"]
        [:th.fw6.tl.pa3.bg-white "Pinned"]
        [:th.fw6.tl.pa3.bg-white "Error"]
@@ -93,9 +95,11 @@
         [:tr.stripe-dark {:key (:cid pin)}
          [:td.pa3 (:cid pin)]
          [:td.pa3 (:name pin)]
+         [:td.pa3 (filesize (:size pin))]
          [:td.pa3 (count-pinning pin)]
          [:td.pa3 (count-pinned pin)]
-         [:td.pa3 (count-errors pin)]
+         (let [err (count-errors pin)]
+           [:td.pa3 {:class (when (> err 0) "red")} err])
          [:td.pa3 (details-link (:cid pin))]
          [:td.pa3 [:a.f5.aqua "View in webui"]]
          [:td.pa3 [:a.f5.aqua {:href (get-ipfs-io-link pin)} "View on ipfs.io"]]

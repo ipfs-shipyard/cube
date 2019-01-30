@@ -93,8 +93,11 @@
 
 (s/def :cube.pin/name :cube.util/not-empty-string)
 
+(s/def :cube.pin/size (s/and int? pos?))
+
 (s/def :cube.pins/pin (s/keys :req-un [:cube.pin/cid
                                        :cube.pin/name
+                                       :cube.pin/size
                                        :cube.pin/peer-map]))
 
 (s/def :cube/pins (s/coll-of :cube.pins/pin))

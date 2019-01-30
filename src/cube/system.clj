@@ -6,7 +6,8 @@
             [cube.setup :as setup]
             [cube.instances :as instances]
             [cube.providers.docker :as provider-docker]
-            [cube.cluster :as cluster]))
+            [cube.cluster :as cluster]
+            [cube.monitoring :as monitoring]))
 
 (defn create-system [config-options]
   (let [{http-port :http-port
@@ -18,4 +19,5 @@
                   :instances (c/using (instances/new) [:db :scheduler :docker])
                   :docker (provider-docker/new "unix:///var/run/docker.sock")
                   :cluster (c/using (cluster/new) [:db :scheduler :instances])
+                  :monitoring (c/using (monitoring/new) [:db :scheduler :instances :cluster])
                   )))
