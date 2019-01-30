@@ -2,7 +2,8 @@
   (:require [com.stuartsierra.component :as c]
             [cube.system :refer [create-system]]
             [cube.setup :as setup]
-            [cube.gui :as gui])
+            [cube.gui :as gui]
+            [clojure.tools.trace :as trace])
   (:gen-class))
 
 (def running-system (atom nil))
@@ -39,6 +40,13 @@
       true
       (Boolean/parseBoolean cube-browser))))
 
+(defn tracing-enabled?
+  "Returns true if CUBE_TRACING set to `true`, otherwise `false`"
+  []
+  (let [tracing? (System/getenv "CUBE_TRACING")]
+    (if (nil? tracing?)
+      false
+      (Boolean/parseBoolean tracing?))))
 
 (defn start-system! [params]
   (reset! running-system (c/start (create-system params))))
@@ -60,7 +68,33 @@
 (defn setup-complete? [live-system]
   (setup/completed? (:db @live-system)))
 
+(defn get-cube-namespaces []
+  (->> (all-ns)
+       (filter #(clojure.string/starts-with? % "cube"))))
+
+;; Trying to be clever and get all namespaces dynamically but trace-ns is
+;; trying to trace the symbol as the actual namespace, instead of the value
+;; of the symbol (which is the namespace to trace)
+;; (defn trace-cube-namespaces []
+;;   (doseq [n (get-cube-namespaces)]
+;;     (trace/trace-ns n)))
+;;
+;; Easy solution for now is to just manually list the namespaces
+(defn trace-cube-namespaces []
+  (do (trace/trace-ns 'cube.cli)
+      (trace/trace-ns 'cube.cluster)
+      (trace/trace-ns 'cube.db)
+      (trace/trace-ns 'cube.gui)
+      (trace/trace-ns 'cube.instances)
+      (trace/trace-ns 'cube.scheduler)
+      (trace/trace-ns 'cube.setup)
+      (trace/trace-ns 'cube.system)
+      (trace/trace-ns 'cube.web)
+      ))
+
 (defn -main [& args]
+  (when (tracing-enabled?)
+    (trace-cube-namespaces))
   (when (gui?)
     (gui/start-gui))
   (start-system! {:http-port (get-port)
