@@ -15,12 +15,7 @@
             [ui.pages.groups :as groups]
             [ui.pages.monitoring :as monitoring]
             [ui.pages.preferences :as preferences]
-            [ui.pages.setup :as setup-page]
-            [ui.pages.setup.welcome :as setup-welcome]
-            [ui.pages.setup.hosting :as setup-hosting]
-            [ui.pages.setup.groups :as setup-groups]
-            [ui.pages.setup.users :as setup-users]
-            [ui.pages.setup.done :as setup-done]
+            [ui.pages.login :as login]
             ;; TODO ruins dead code elimation
             [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
@@ -51,13 +46,7 @@
                  "groups" groups/render
                  "monitoring" monitoring/render
                  "preferences" preferences/render
-                 "setup" setup-page/render
-                 ["setup/" :password "/welcome"] setup-welcome/render
-                 ["setup/" :password "/hosting"] setup-hosting/render
-                 ["setup/" :password "/hosting/" :host] setup-hosting/render
-                 ["setup/" :password "/groups"] setup-groups/render
-                 ["setup/" :password "/users"] setup-users/render
-                 ["setup/" :password "/done"] setup-done/render}])
+                 "login" login/render}])
 
 (defn not-found [urls active-page]
   [:div

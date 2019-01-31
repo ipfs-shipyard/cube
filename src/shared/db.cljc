@@ -48,14 +48,6 @@
                                         :cube.instances/wanted
                                         :cube.instances/running]))
 
-;; Setup
-(s/def :cube.setup/completed? boolean?)
-
-(s/def :cube.setup/password :cube.util/not-empty-string)
-
-(s/def :cube/setup (s/keys :req-un [:cube.setup/completed?
-                                    :cube.setup/password]))
-
 ;; Pins
 ;; TODO needs to have all pinning statuses from ipfs-cluster
 
@@ -63,6 +55,7 @@
                                :pinning
                                :pin_error
                                :unpin_error})
+
 (s/def :cube.pin.peer/peer-id :cube.util/not-empty-string)
 (s/def :cube.pin.peer/timestamp :cube.util/not-empty-string)
 
@@ -103,5 +96,4 @@
 (s/def :cube/pins (s/coll-of :cube.pins/pin))
 
 (s/def :cube/db (s/keys :opt-un [:cube/instances
-                                 :cube/setup
                                  :cube/pins]))

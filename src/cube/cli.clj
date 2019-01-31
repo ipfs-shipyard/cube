@@ -1,7 +1,6 @@
 (ns cube.cli
   (:require [com.stuartsierra.component :as c]
             [cube.system :refer [create-system]]
-            [cube.setup :as setup]
             [cube.gui :as gui]
             [clojure.tools.trace :as trace])
   (:gen-class))
@@ -63,10 +62,14 @@
       :local-port))
 
 (defn get-setup-password-from-system [live-system]
-  (setup/get-password (:db @live-system)))
+  ;; (setup/get-password (:db @live-system))
+  "random-password"
+  )
 
 (defn setup-complete? [live-system]
-  (setup/completed? (:db @live-system)))
+  ;; (setup/completed? (:db @live-system))
+  true
+  )
 
 (defn get-cube-namespaces []
   (->> (all-ns)
@@ -87,7 +90,6 @@
       (trace/trace-ns 'cube.gui)
       (trace/trace-ns 'cube.instances)
       (trace/trace-ns 'cube.scheduler)
-      (trace/trace-ns 'cube.setup)
       (trace/trace-ns 'cube.system)
       (trace/trace-ns 'cube.web)
       ))

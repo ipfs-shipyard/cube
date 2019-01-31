@@ -9,10 +9,12 @@
 
 (defn http [url method body headers func]
   "Make a HTTP call with url and method, func is called once res has been received"
-  (.then (.then (js/fetch url (clj->js {:method method
-                                        :body (to-json body)
-                                        :headers (clj->js headers)})) #(.text %))
-         #(func %)))
+  (let [opts {:method method
+              :headers (clj->js headers)}
+        merged-opts (if (nil? body) opts (merge opts {:body (to-json body)}))]
+    (-> (js/fetch url (clj->js merged-opts))
+        (.catch #(func %))
+        (.then #(func %)))))
 
 (defn http-status [url method func]
   "Make a HTTP call with url and method, func is called once res has been received"

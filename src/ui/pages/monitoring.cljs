@@ -30,13 +30,13 @@
      [:div.tc.w-20.white.pa2.ma1.fl {:class (diskspace-colors (-> freespace :value))}
       [:div.f3.b "Free Diskspace"]
       [:div.monospace.mt2.f4 (-> freespace :value filesize)]]
-     [:div.tc.w-20.bg-aqua.white.pa2.ma1.fl
+     [:div.tc.w-20.bg-aqua.white.pa2.ma1.fl.o-20
       [:div.f3.b "CPU"]
       [:div.monospace.mt2.f4 "25%"]]
-     [:div.tc.w-20.bg-red.white.pa2.ma1.fl
+     [:div.tc.w-20.bg-red.white.pa2.ma1.fl.o-20
       [:div.f3.b "Memory"]
       [:div.monospace.mt2.f4 "64%"]]
-     [:div.tc.w-20.bg-aqua.white.pa2.ma1.fl
+     [:div.tc.w-20.bg-aqua.white.pa2.ma1.fl.o-20
       [:div.f3.b "Network"]
       [:div.monospace.mt2.f5 "24Mbps / 12Mbps (▲/▼)"]]
      [:div.cf]

@@ -1,4 +1,5 @@
 .lein-repl-history
+.lein-failures
 .nrepl-port
 target/**
 resources/public/js

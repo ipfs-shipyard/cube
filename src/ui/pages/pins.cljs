@@ -7,9 +7,6 @@
             [clojure.contrib.humanize :refer [filesize]]
             ))
 
-(defn no-instances-message []
-  [:p "Seems you have no instances running currently."])
-
 (defn no-pins-message []
   [:p "Seems you have no pins currently"])
 
@@ -119,11 +116,9 @@
          meta-data, remove some of them to clear space or simply browse
          your pinned content"]]
     [:div.w-30.fl.pa3
-     (if (= 0 (count @(rf/subscribe [:instances/running])))
-       (no-instances-message)
        [:div.w-100
         [:h3.f3 "Add new pin"]
-        (add-pin)])]
+        (add-pin)]]
     [:div.w-30.fl.pa3
      [:h3.f3 "Pin manually with ipfs-cluster-ctl"]
      [:p
