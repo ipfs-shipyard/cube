@@ -9,7 +9,7 @@
 
 ;; Which images to use for the containers
 (def images {:go-ipfs "ipfs/go-ipfs:v0.4.18"
-             :ipfs-cluster "ipfs/ipfs-cluster:v0.7.0"})
+             :ipfs-cluster "ipfs/ipfs-cluster:v0.8.0"})
 
 ;; Keyword for this particular provider
 (def provider-type :docker)
