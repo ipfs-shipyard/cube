@@ -91,3 +91,15 @@
 
 (defn get-pins [cluster]
   (db/access (:db cluster) :pins))
+
+(defn status [cluster cid]
+  (:body
+    (http/get
+      (format "%s/pins/%s" (get-api-addr (:instances cluster)) cid)
+      {:as :json})))
+
+(defn status-all [cluster]
+  (:body
+    (http/get
+      (format "%s/pins" (get-api-addr (:instances cluster)))
+      {:as :json})))
