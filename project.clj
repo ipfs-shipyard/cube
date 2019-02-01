@@ -53,7 +53,7 @@
                  [cider/piggieback "0.3.10"]
                  [binaryage/devtools "0.9.10"]
                  [clojure-humanize "0.2.2"]]
-  :hooks [leiningen.cljsbuild leiningen.less]
+  :profiles {:uberjar {:hooks [leiningen.cljsbuild leiningen.less]}}
   :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]
                  :init-ns cube.dev}
   :less {:source-paths ["src/ui/less"]
