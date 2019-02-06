@@ -1,0 +1,13 @@
+[Unit]
+Description=cube
+
+[Service]
+WorkingDirectory=/app
+ExecStart=/usr/bin/java -jar /app/cube.jar
+Restart=on-failure
+Environment=CUBE_GUI=false
+Environment=CUBE_OPEN_BROWSER=false
+Environment=PORT=3000
+
+[Install]
+WantedBy=default.target
