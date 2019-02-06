@@ -47,6 +47,20 @@ is available for executing commands for you.
 - Use `PORT=3000 CUBE_GUI=false CUBE_OPEN_BROWSER=false lein run` to run the app
   without opening the GUI or a browser window, and always use port 3000.
 
+##### Development Practices
+
+The application is divided in three parts, `cube` which is the backend, `shared`
+which is basically specs and helper functions for data passed between the backend
+and frontend, and `ui` that is the frontend.
+
+`cube` is made out of components, that are then put together into a system. The
+repl or the CLI runs this full system with some configuration parameters. Some
+components call functions from other components.
+
+The piece that is pretty much present everywhere is the `DB` component. It's
+the shared, mutable state. Reads and writes to this is protected by a auth
+layer.
+
 ##### Tests
 
 You can run the tests with `lein test` or even `lein auto test` for self-running

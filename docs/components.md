@@ -7,7 +7,6 @@ in the system.
 - DB - Handles the mutable state and persistance
 - Instances - Handles communication with different hosting services
 - Scheduler - Manages recurring tasks that should be run continously
-- Setup - Handles mutation of the setup-phase
 - Web - Handles web requests to the application, only available locally
 
 Future but not yet implemented components

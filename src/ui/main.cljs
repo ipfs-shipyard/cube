@@ -5,27 +5,13 @@
             [cljs.pprint :refer [pprint]]
             [ui.state :as state]
             [ui.router :as router]
-            [ui.setup :as setup]
             [ui.http :as http]
+            [ui.login :as login]
             [ui.navigation :as navigation]
+            [ui.websocket :as websocket]
             [ui.devtools :as devtools]))
 
 (devtools/init!)
-
-;; Eventually move into it's own file
-;; TODO if connection dies, need to retry
-(defn create-ws [url]
-  (js/WebSocket. url))
-
-(defn handle-ws-msg [msg]
-  (dispatch [:set-remote-db (js->clj (.parse js/JSON (.-data msg)) :keywordize-keys true)]))
-
-(defn setup-ws! [url]
-  (let [ws (create-ws url)]
-    (set! (.-onmessage ws) handle-ws-msg)))
-
-(defn get-ws-url []
-    (str "ws://" (-> (.-location js/window) .-host) "/api/db/ws"))
 
 ;; app doing routing
 (defn app []
@@ -33,7 +19,10 @@
   [:div
    [navigation/navbar]
    [:div.ma3.gray-box.pa3
-    (router/matching-page @(subscribe [:active-page]))]])
+    (router/matching-page @(subscribe [:active-page]))]
+   ;; Debug mode, shows the state on every page
+   ;; [:pre (with-out-str (cljs.pprint/pprint @re-frame.db/app-db.))]
+   ])
 
 ;; aaaaaand a render function! Does what it says on the tin
 (defn render! []
@@ -50,12 +39,10 @@
   (dispatch-sync [:initialize])
   ;; navigate to the page we're at according to url
   (dispatch-sync [:go-to-page (-> js/window .-location .-pathname)])
-  ;; check if setup has been finished already
-  (dispatch-sync [:check-setup-completed])
+  ;; check if we're logged in
+  (dispatch-sync [:check-logged-in])
   ;; setup event listeners for updating state when page changes
   (router/dispatch-new-pages! js/window)
-  ;; start listen for ws messages
-  (setup-ws! (get-ws-url))
   ;; And render!
   (render!))
 

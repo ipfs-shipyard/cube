@@ -1,27 +1,36 @@
 (ns ui.navigation
-  (:require [re-frame.core :refer [subscribe]]
+  (:require [re-frame.core :refer [subscribe dispatch]]
             [ui.router :as router]))
 
-(def navbar-items [{:url "/home" :title "Home" :active true}
-                   {:url "/upload" :title "Upload" :active false}
-                   {:url "/pins" :title "Pins" :active true}
-                   {:url "/instances" :title "Instances" :active true}
-                   {:url "/users" :title "Users" :active false}
-                   {:url "/groups" :title "Groups" :active false}
-                   {:url "/monitoring" :title "Monitoring" :active true}
-                   {:url "/preferences" :title "Preferences" :active false}
-                   {:url "/logout" :title "Logout" :active false}])
+;; list of navigation links, :name represents the permission the user needs to
+;; have access to to see the link as active
+(def navbar-items [{:url "/home" :title "Home" :name "pins"}
+                   {:url "/upload" :title "Upload" :name "upload"}
+                   {:url "/pins" :title "Pins" :name "pins"}
+                   {:url "/instances" :title "Instances" :name "instances"}
+                   {:url "/users" :title "Users" :name "users"}
+                   {:url "/groups" :title "Groups" :name "groups"}
+                   {:url "/monitoring" :title "Monitoring" :name "monitoring"}
+                   {:url "/preferences" :title "Preferences" :name "preferences"}])
+
+(defn take-first-elements [items]
+  (distinct (reduce (fn [acc [curr1 curr2]] (conj acc curr1)) [] items)))
+
+(defn is-string [item str]
+  (= item str))
+
+(defn has-permission [permissions perm]
+  (boolean (some #(is-string % perm) (take-first-elements permissions))))
+
+(defn prevent-default-then [ev then]
+  (do (.preventDefault ev)
+      (then)))
 
 (defn href-attr [url enabled?]
   {:href (if enabled? url "")
    :key url
-   :onClick #(let [ev %]
-               (.preventDefault ev)
-               (when enabled?
-                 (router/go-to-page url)))})
-
-(defn includes? [coll item]
-  (boolean (some #{item} coll)))
+   :onClick #(prevent-default-then % (fn [] (when enabled?
+                                              (router/go-to-page url))))})
 
 (defn create-navbar-item [url title matched? enabled?]
   [:a.link.white.f5.dib.mr3
@@ -30,15 +39,31 @@
           (href-attr url enabled?))
    title])
 
-(defn navbar []
-  (let [setup-completed? @(subscribe [:setup-completed?])]
-    [:nav.pa3.pa4-ns.bg-navy {:class (when (not setup-completed?) "o-10 disabled")}
-     [:a.link.dim.white.b.f3.dib.mr3.aqua (href-attr "/home" setup-completed?) "Cube"]
-     (let [active-page @(subscribe [:active-page])]
-       (for [item navbar-items]
-         (let [url (:url item)
-               title (:title item)
-               active (:active item)
-               matched? (= active-page url)]
-           (create-navbar-item url title matched? active))))]))
+(defn profile-control [profile]
+  (if (nil? profile)
+    [:div [:a.link.white.f5.dib.mr3 (href-attr "/login" true) "Login"]]
+    [:div
+       [:a.link.white.f5.dib.mr3 (href-attr "/profile" true)
+        [:span.b "User: "]
+        [:span (:username profile)]]
+       [:a.link.white.f5.dib.mr3
+        {:href "#"
+         :onClick #(prevent-default-then % (fn []
+                                             (dispatch [:logout])))} "Logout"]]))
 
+(defn navbar []
+  [:nav.bg-navy
+   [:div.w-80.pa3.fl
+    [:a.link.dim.white.b.f3.dib.mr3.aqua (href-attr "/home" true) "Cube"]
+    (let [active-page @(subscribe [:active-page])
+          permissions @(subscribe [:login/permissions])]
+      (doall (for [item navbar-items]
+               (let [url (:url item)
+                     title (:title item)
+                     perm-name (:name item)
+                     matched? (= active-page url)
+                     enabled? (has-permission permissions perm-name)]
+                 (create-navbar-item url title matched? enabled?)))))]
+   [:div.tr.w-20.fl.pa3 {:style {:height "27px" :line-height "27px"}}
+    (profile-control @(subscribe [:login/profile]))]
+   [:div.cf]])
