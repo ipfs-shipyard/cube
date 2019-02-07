@@ -9,9 +9,10 @@
             [ui.login :as login]
             [ui.navigation :as navigation]
             [ui.websocket :as websocket]
-            [ui.devtools :as devtools]))
+            ;; [ui.devtools :as devtools]
+            ))
 
-(devtools/init!)
+;; (devtools/init!)
 
 ;; app doing routing
 (defn app []

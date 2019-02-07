@@ -44,38 +44,48 @@
                  [buddy/buddy-auth "2.1.0"]
                  [crypto-password "0.2.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [day8.re-frame/re-frame-10x "0.3.6-react16"]
                  [reagent "0.8.1"]
                  [reagent-utils "0.3.2"]
                  [hiccup "1.0.5"]
                  [re-frame "0.10.6"]
                  [bidi "2.1.5"]
-                 [day8.re-frame/tracing "0.5.1"]
                  [org.clojure/test.check "0.10.0-alpha3"]
-                 [figwheel-sidecar "0.5.18"]
-                 [cider/piggieback "0.3.10"]
-                 [binaryage/devtools "0.9.10"]
                  [clojure-humanize "0.2.2"]]
-  :profiles {:uberjar {:hooks [leiningen.cljsbuild leiningen.less]}}
+  :profiles {:uberjar {:prep-tasks ["compile" ["cljsbuild" "once" "prod"]
+                                              ["less" "once"]]
+                       ;; :hooks [leiningen.cljsbuild leiningen.less]
+                       :dependencies [[day8.re-frame/tracing-stubs "0.5.1"]]}
+             :prod {:dependencies [[day8.re-frame/tracing-stubs "0.5.1"]]}
+             :dev {:dependencies [[figwheel-sidecar "0.5.18"]
+                                  [day8.re-frame/tracing "0.5.1"]
+                                  [cider/piggieback "0.3.10"]
+                                  [day8.re-frame/re-frame-10x "0.3.6-react16"]
+                                  [binaryage/devtools "0.9.10"]]}}
   :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]
                  :init-ns cube.dev}
   :less {:source-paths ["src/ui/less"]
          :target-path "resources/public/css"}
   :figwheel { :css-dirs ["resources/public/css"]}
-  :cljsbuild {:builds [{
-                        :id "main"
+  :cljsbuild {:builds [{:id "dev"
                         :source-paths ["src/ui"]
                         :figwheel {:on-jsload "ui.main/on-js-reload"}
-                        :compiler {
-                                   :output-dir "./resources/public/js"
+                        :compiler {:output-dir "./resources/public/js"
                                    :output-to "./resources/public/js/cljs-file.js"
                                    :source-map true
-                                   ;; TODO enable production builds without devtools
-                                   ;; :optimizations :advanced
                                    :optimizations :none
                                    :preloads [day8.re-frame-10x.preload figwheel.preload]
-                                   :pretty-print true
-                                   }}]}
+                                   :closure-defines {goog.DEBUG true}
+                                   :pretty-print true}}
+                       {:id "prod"
+                        :source-paths ["src/ui"]
+                        :figwheel {:on-jsload nil}
+                        :compiler {:output-to "./resources/public/js/cljs-file.js"
+                                   :source-map false
+                                   :optimizations :advanced
+                                   :preloads []
+                                   :closure-defines {goog.DEBUG false}
+                                   :pretty-print false}}
+                       ]}
   :main cube.cli
   ;; TODO aot disabled for now as corrupts refresh of namespaces in repl
   ;; :aot [cube.cli]
