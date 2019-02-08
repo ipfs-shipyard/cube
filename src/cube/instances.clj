@@ -4,54 +4,56 @@
             [clojure.pprint :refer [pprint]]
             [cube.db :as db]
             [crypto.random :refer [hex]]
-            ;; TODO currently hardcoding provider to docker
-            [cube.providers.docker :as provider-docker]))
+            [cube.providers.docker :as provider-docker]
+            [cube.providers.do :as provider-do]))
 
-(defn get-difference [a b]
-  (- a b))
+(def active-providers [:docker])
 
-(defn create-instances [db conn amount]
-  (doseq [_ (range amount)]
-    (provider-docker/create conn db)))
+(def create-map {:docker (fn [db conn] (provider-docker/create conn db))
+                 :do (fn [db conn] (println "creating do instance"))})
 
-(defn delete-instances [db conn amount]
-  (doseq [_ (range amount)]
-    (let [[id m] (first (db/access-in db [:instances :running]))]
-      (provider-docker/destroy conn m)
-      (db/remove-in db [:instances :running id])
-      )))
+(def destroy-map {:docker (fn [db conn id] (let [m (db/access-in db [:instances :running id])]
+                                             (provider-docker/destroy conn m)
+                                             (db/remove-in db [:instances :running id])))
+                  :do (fn [db conn] (println "delete do instance"))})
 
-;; Hard-coded to docker atm
+(defn get-provider-wanted [wanted provider]
+  (provider wanted))
+
+(defn get-provider-running [running provider]
+  (vec (filter #(let [[id i] %] (= (:type i) provider)) running)))
+
+(defn check-provider [db docker-conn wanted running provider]
+  (let [running (get-provider-running running provider)
+        n-wanted (get-provider-wanted wanted provider)
+        n-running (count running)
+        create-func (provider create-map)
+        destroy-func (provider destroy-map)]
+    (cond
+      (= n-wanted 0) (doseq [[id _] running]
+                       (destroy-func db docker-conn id))
+      (> n-wanted n-running) (doseq [_ (range (- n-wanted n-running))]
+                               (create-func db docker-conn))
+      (< n-wanted n-running) (let [to-destroy (- n-running n-wanted)]
+                               (doseq [[id _] (take to-destroy running)]
+                                 (destroy-func db docker-conn id)))
+      (= n-wanted n-running) (println "Balanced"))))
+
 (defn check-instances [db docker-conn]
-  (when-not (nil? (db/access-in db [:instances :wanted :docker]))
-    (let [wanted (db/access-in db [:instances :wanted :docker])
-          current (count (db/access-in db [:instances :running]))]
-
-      (cond
-        (= wanted 0) (doseq [[id m] (db/access-in db [:instances :running])]
-                       (provider-docker/destroy docker-conn m)
-                       (db/remove-in db [:instances :running id]))
-        (> wanted current) (let [to-create (- wanted current)]
-                             (println (format "Creating %s new instances" to-create))
-                             (create-instances db docker-conn to-create))
-        (< wanted current) (let [to-remove (- current wanted)]
-                             (println (format "Removing %s instances" to-remove))
-                             (delete-instances db docker-conn to-remove))
-        (= wanted current) (comment "Balanced")))))
-
+  (let [wanted (db/access-in db [:instances :wanted])
+        running (db/access-in db [:instances :running])]
+    (doseq [provider active-providers]
+      (check-provider db docker-conn wanted running provider))))
 
 (defrecord Instances [db scheduler docker]
   c/Lifecycle
   (start [this]
     (println "[instances] Starting")
-    ;; Debug function to change state each tick
-    ;; (scheduler/add-task scheduler #(db/put db :ticks (+ (db/access db :ticks) 1)))
     (when (nil? (db/access db :instances))
       (db/put db :instances {:wanted {}
                              :running {}
                              :cluster-secret (hex 32)}))
     (scheduler/add-task scheduler #(check-instances db (:connection docker)))
-    ;; pull needed images
     (assoc this :instances {:db db}))
   (stop [this]
     (print "[instances] Stopping")
