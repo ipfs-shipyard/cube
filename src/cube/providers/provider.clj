@@ -2,13 +2,41 @@
 
 ;; Not really used yet!
 
-(defprotocol Provider
-  "Provider manages hosts in some location"
-  (credentials [token] "Creates a credentials map for authenticating with this provider")
-  (create [instance-spec] "Creates a instance based on the passed in specification")
-  (destroy [instance-id] "Destroys a instance based on the instance ID")
-  (is-ready? [instance-id] "Checks if the instance is currently running"))
+(def provision-steps [{:name "Create"
+                       :in [:token]
+                       :command #({:new-token %1})
+                       :out [:new-token]}
+                      {:name "Read"
+                       :in [:new-token]
+                       :command #({:name "Robert"})}])
 
+(defn resolve-opts [v o]
+  (vec (map #(% o) v)))
+
+(defn provide [steps opts]
+  (doseq [step steps]
+    (let [args (resolve-opts (:in step) opts)]
+      (apply (:command step) args))))
+
+(comment
+  (resolve-opts [:token] {:token "A"})
+  ;; => ["A"]
+  (apply (fn [n1 n2] {:sum (+ n1 n2)}) [1 2])
+
+  (provide [{:name "Add"
+             :in [:n1 :n2]
+             :command (fn [n1 n2] {:sum (+ n1 n2)})
+             :out [:sum]}] {:n1 1
+                            :n2 1})
+  )
+
+;; (defprotocol Provider
+;;   "Provider manages hosts in some location"
+;;   (credentials [token] "Creates a credentials map for authenticating with this provider")
+;;   (create [instance-spec] "Creates a instance based on the passed in specification")
+;;   (destroy [instance-id] "Destroys a instance based on the instance ID")
+;;   (is-ready? [instance-id] "Checks if the instance is currently running"))
+;; 
 ;; ;; Experimental API
 ;;   (s/def ::instance-opts {:name
 ;;                           :size

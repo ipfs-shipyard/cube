@@ -5,6 +5,7 @@
             [cube.web :as web]
             [cube.instances :as instances]
             [cube.providers.docker :as provider-docker]
+            [cube.providers.do :as provider-do]
             [cube.cluster :as cluster]
             [cube.monitoring :as monitoring]))
 
@@ -14,8 +15,9 @@
     (c/system-map :db (db/new db-path)
                   :scheduler (scheduler/new {:interval 1})
                   :web (c/using (web/new http-port) [:db :instances :cluster])
-                  :instances (c/using (instances/new) [:db :scheduler :docker])
+                  :instances (c/using (instances/new) [:db :scheduler :docker :digitalocean])
                   :docker (provider-docker/new "unix:///var/run/docker.sock")
+                  :digitalocean (provider-do/new)
                   :cluster (c/using (cluster/new) [:db :scheduler :instances])
                   :monitoring (c/using (monitoring/new) [:db :scheduler :instances :cluster])
                   )))

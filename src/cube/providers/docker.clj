@@ -55,18 +55,19 @@
     (str "http://" ip ":9095")))
 
 ;; Creates a map to map ID => containers for go-ipfs + ipfs-cluster
-(defn create-id [conn go-ipfs-id ipfs-cluster-id]
-  [(keyword (url-part 8)) {:type provider-type
+(defn create-id [conn provider go-ipfs-id ipfs-cluster-id]
+  [(keyword (url-part 8)) {:type provider
                            :metadata {:go-ipfs-id go-ipfs-id
                                       :ipfs-cluster-id ipfs-cluster-id}
-                           :cluster-api (get-api-multiaddr conn ipfs-cluster-id)
-                           :webui (get-webui-addr conn ipfs-cluster-id)
-                           :ipfs-proxy (get-ipfs-proxy conn ipfs-cluster-id)}])
+                           ;; :cluster-api (get-api-multiaddr conn ipfs-cluster-id)
+                           ;; :webui (get-webui-addr conn ipfs-cluster-id)
+                           ;; :ipfs-proxy (get-ipfs-proxy conn ipfs-cluster-id)
+                           }])
 
 ;; Saves containers of go-ipfs and ipfs-cluster into the global state
 ;; Returns the shared ID
-(defn save-instance [conn db go-ipfs-id ipfs-cluster-id]
-  (let [[k v] (create-id conn go-ipfs-id ipfs-cluster-id) ]
+(defn save-instance [conn db provider go-ipfs-id ipfs-cluster-id]
+  (let [[k v] (create-id conn provider go-ipfs-id ipfs-cluster-id) ]
     (db/put-in db [:instances :running k] v)))
 
 (defn get-start-cmd
@@ -75,11 +76,22 @@
   [db conn]
   (let [instances (db/access-in db [:instances :running])]
     (if (> (count instances) 0)
-      (let [ip (get-ip conn (-> instances first second :metadata :ipfs-cluster-id))
+      (let [;; even from do, this will work as the node only needs the private ip
+            ip (get-ip conn (-> instances first second :metadata :ipfs-cluster-id))
+            ;; this won't work from do, as we're unable to read from it (yet)
+            ;; also, this should have an external address...
+            ;; we should be able to set where the docker image is bound too!
+            ;; the go-ipfs node should be on public network
+            ;; ipfs-cluster needs to be hidden
             res (get-retry 10 ip)
             id (-> res :body :id)]
         (str "daemon --bootstrap /ip4/" ip "/tcp/9096/ipfs/" id))
       "")))
+
+(comment
+  (docker/pull (docker/connect) "redis:alpine")
+  (docker/run (docker/connect) "redis:alpine" "redis-server" {} {"192.168.1.33:6379" "6379"})
+  )
 
 (defn create-go-ipfs [conn]
   (docker/run conn (:go-ipfs images) "daemon" {} {} true))
@@ -99,7 +111,7 @@
         start-cmd (get-start-cmd db conn)
         secret (db/access-in db [:instances :cluster-secret])
         ipfs-cluster-id (create-ipfs-cluster conn start-cmd go-ipfs-ip secret)]
-    (save-instance conn db go-ipfs-id ipfs-cluster-id)))
+    (save-instance conn db provider-type go-ipfs-id ipfs-cluster-id)))
 
 (defn destroy [conn instance]
   (let [metadata (:metadata instance)

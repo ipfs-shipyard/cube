@@ -7,10 +7,15 @@
             [cube.providers.docker :as provider-docker]
             [cube.providers.do :as provider-do]))
 
-(def active-providers [:docker])
+(def active-providers [:docker :do])
 
 (def create-map {:docker (fn [db conn] (provider-docker/create conn db))
-                 :do (fn [db conn] (println "creating do instance"))})
+                 :do (fn [db conn] (provider-do/create db))})
+
+(comment
+  (let [db (:db @cube.dev/running-system)]
+    (provider-do/create db))
+  )
 
 (def destroy-map {:docker (fn [db conn id] (let [m (db/access-in db [:instances :running id])]
                                              (provider-docker/destroy conn m)

@@ -38,7 +38,7 @@
                  [clj-ssh "0.5.14"]
                  [ring-json-response "0.2.0"]
                  [aleph "0.4.6"]
-                 [lispyclouds/clj-docker-client "0.1.12"]
+                 [lispyclouds/clj-docker-client "0.1.13"]
                  [com.fasterxml.jackson.core/jackson-core "2.9.8"]
                  [org.clojure/tools.trace "0.7.10"]
                  [buddy/buddy-auth "2.1.0"]

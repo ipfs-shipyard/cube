@@ -45,6 +45,10 @@
 (defn set-for-pins [func addr pins]
   (map #(func addr %) pins))
 
+;; TODO for digitalocean hosts, we need to proxy requests...
+;; how can we communicate with the containers without opening up any security
+;; holes?
+;; use libp2p stream mounting?
 (defn update-pins [db instances]
   (let [inst (second (first (instances/get-running instances)))
         api-addr (:cluster-api inst)
