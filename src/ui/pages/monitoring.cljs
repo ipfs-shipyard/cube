@@ -25,7 +25,7 @@
     [:div
      [:div.ma1.pa1 (str "Last Update: " (-> pinsize :timestamp unix->jsdate))]
      [:div.tc.w-20.bg-aqua.white.pa2.ma1.fl
-      [:div.f3.b "Spaced used by Pins"]
+      [:div.f3.b "Space used by Pins"]
       [:div.monospace.mt2.f4 (-> pinsize :value filesize)]]
      [:div.tc.w-20.white.pa2.ma1.fl {:class (diskspace-colors (-> freespace :value))}
       [:div.f3.b "Free Diskspace"]
@@ -40,6 +40,6 @@
       [:div.f3.b "Network"]
       [:div.monospace.mt2.f5 "24Mbps / 12Mbps (▲/▼)"]]
      [:div.cf]
-     [:div.mt3 "Notice: Currently this only actually updates the 'Spaced used by
+     [:div.mt3 "Notice: Currently this only actually updates the 'Space used by
                Pins' and 'Free Diskspace' values. Other values are mock values
                and not real."]]))
