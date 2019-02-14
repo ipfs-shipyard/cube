@@ -20,7 +20,7 @@
 ;; ssh in
 ;; use all the docker functions to create the actual cluster
 
-(defonce auth-token "d85f7311cda382899e6dfe7dbae13b3cfb6d66a68a0f5b372d68a02074a6da5b")
+(defonce auth-token "x")
 (defonce base-api "https://api.digitalocean.com/v2")
 (defonce default-ssh-key-name "cube-deploy-key")
 (defonce key-store (str (System/getProperty "user.home") "/.cube/"))
